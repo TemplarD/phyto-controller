@@ -1,12 +1,12 @@
 # 🌱 PhytoController - Smart Phytolighting Controller
 
-Automatic control system for powerful phytolights based on real-time light intensity monitoring.
+An automated system for controlling high-power phytolamps based on actual light levels.
 
 ## 🎯 System Purpose
 
-The controller is designed for automatic control of phytoled lights (30-50W) in mixed lighting conditions:
+The controller is designed for automatic control of phyto-LEDs (30-50W) in mixed lighting conditions:
 - **Sunlight** - primary source  
-- **Phytolights** - supplemental lighting when natural light is insufficient
+- **Phytolamps** - supplemental lighting when natural light is insufficient
 
 ## 🔌 Hardware Components
 
@@ -15,15 +15,15 @@ The controller is designed for automatic control of phytoled lights (30-50W) in 
 - **Light Sensor**: GY-30 (BH1750) or VEML7700
 - **Load Control**: 12V Relay via TIP122 transistor
 - **Indication**: WS2812B RGB LED
-- **Power**: 5V→12V Step-up converter
+- **Power Supply**: 5V→12V Boost converter
 
-### Connection Scheme
+### Connection Diagram
 
 ESP32-WROOM (CP2102)
 
-├── 🔌 RELAY CIRCUIT
+├── 🔌 RELAY SCHEMATIC
 │   GPIO4 → 680Ω Resistor → TIP122 Base
-│   TIP122 Collector → Relay Coil
+│   TIP122 Collector → Relay coil
 │   TIP122 Emitter → GND
 │   1N4001 Diode parallel to relay coil
 
@@ -39,8 +39,8 @@ ESP32-WROOM (CP2102)
 │   GND → GND
 
 └── 💡 STATUS LED
-    GPIO2 → LED Anode (via 220Ω)
-    GND → LED Cathode
+    GPIO2 → LED anode (via 220Ω)
+    GND → LED cathode
 
 ## 💾 Software Architecture
 
@@ -56,22 +56,30 @@ ESP32-WROOM (CP2102)
 
 **RelayController.h/RelayController.cpp** - Relay and load control
 
-**RGBLed.h/RGBLed.cpp** - RGB indication control
+**RGBLed.h/RGBLed.cpp** - RGB indicator control
+
+**Secrets.h** - Private network settings, WiFi login/password
+
+**WebAPI.h/WebAPI.cpp** - API system for web operation
 
 ## 🔧 Installation and Setup
 
 1. Install libraries: GY-30, FastLED
-2. Connect components according to the scheme
-3. Upload code to ESP32
+2. Connect components according to the diagram
+3. Flash the code to ESP32
 4. Open Serial Monitor (115200 baud)
+5. To connect to WebAPI, use the controller network "PhytoController" with password 12345678.
+Or specify network connection parameters in the secrets.h file
+6. Network connection address is 192.168.4.1
 
 ## 🚀 Features
 
-- Automatic phytolight control based on light intensity threshold
+- Automatic phytolamp control based on light threshold
 - RGB system status indication
 - Data and event logging
 - Support for GY-30 and VEML7700 sensors
 - ESD and overload protection
+- WebAPI control via its own WiFi network or via connection network (specified in secrets.h file)
 
 _________________________________________________________________
 
@@ -135,12 +143,19 @@ ESP32-WROOM (CP2102)
 
 **RGBLed.h/RGBLed.cpp** - Управление RGB индикацией
 
+**Secrets.h** - Часные настройки сети и т.д. Лоин\пароль от wifi
+
+**WebAPI.h/WebAPI.cpp** - Система API для работы через Web 
+
 ## 🔧 Установка и запуск
 
 1. Установи библиотеки: GY-30, FastLED
 2. Подключи компоненты по схеме
 3. Прошей код на ESP32
 4. Открой Serial Monitor (115200 бод)
+5. Для подключения к WebAPI используй сеть контроллера PhytoController c паролем 12345678.
+Или укажи параметры сети для подключения в файле secrets.h
+6. Адрес подключения своей сети 192.168.4.1
 
 ## 🚀 Возможности
 
@@ -149,3 +164,4 @@ ESP32-WROOM (CP2102)
 - Логирование данных и событий
 - Поддержка датчиков GY-30 и VEML7700
 - Защита от ESD и перегрузок
+- Управление через WebAPI через свою сеть wifi, или через сеть подключения (указывается в файле secrets.h).
