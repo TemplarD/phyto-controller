@@ -19,10 +19,14 @@ public:
     static void enableDebug(bool enable);
     static String getLog(LogType type, uint16_t maxLines = 50);
     static void clearLog(LogType type);
+    static void setMaxLogSize(uint32_t maxSize); // 🔄 Новая функция
+    static uint32_t getLogSize(LogType type);    // 🔄 Новая функция
 
 private:
     static void writeToFile(const String& message, const String& filename);
     static String getFilename(LogType type);
+    static void rotateLogIfNeeded(LogType type); // 🔄 Новая функция
+    static uint32_t maxLogSize; // 🔄 Максимальный размер лога в байтах
 };
 
 // Макросы для логирования

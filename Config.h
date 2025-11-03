@@ -19,9 +19,11 @@ struct Settings {
     bool autoMode = true;              // Автоматический режим
     bool manualOn = false;             // Ручное управление
     bool debugEnabled = true;          // Включить отладку
-    String wifiSSID = "";
     String wifiPassword = "";
     String schedule = "08:00-20:00";   // Расписание
+    String wifiSSID = "YourWiFi";
+    String wifiPassword = "YourPassword";
+    uint32_t maxLogSize = 50 * 1024; // 50KB
 };
 
 // Глобальный экземпляр настроек

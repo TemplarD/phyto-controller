@@ -3,6 +3,8 @@
 #include "Config.h"
 #include <LittleFS.h>
 
+uint32_t DebugLogger::maxLogSize = 1024 * 50; // 50KB по умолчанию
+
 void DebugLogger::begin() {
     if (!LittleFS.begin(true)) {
         Serial.println("❌ Ошибка инициализации LittleFS");
@@ -47,8 +49,9 @@ void DebugLogger::logSensor(float lux, bool relayState) {
 }
 
 void DebugLogger::writeToFile(const String& message, const String& filename) {
-    // Временно комментируем запись в файл
-    /*
+    // Проверяем и ротируем если нужно
+    rotateLogIfNeeded(filename);
+    
     String fullPath = "/logs/" + filename;
     
     File file = LittleFS.open(fullPath, "a");
@@ -59,9 +62,8 @@ void DebugLogger::writeToFile(const String& message, const String& filename) {
     
     file.print(message);
     file.close();
-    */
     
-    // Просто выводим в Serial для отладки
+    // Выводим в Serial для отладки
     Serial.print("📝 LOG: " + filename + " - " + message);
 }
 
@@ -106,3 +108,63 @@ void DebugLogger::clearLog(LogType type) {
     LittleFS.remove(fullPath);
     EVENT_LOG("🧹 Очищен лог: " + getFilename(type));
 }
+
+void DebugLogger::setMaxLogSize(uint32_t maxSize) {
+    maxLogSize = maxSize;
+    SYSTEM_LOG("🔧 Макс. размер лога установлен: " + String(maxSize) + " байт");
+}
+
+uint32_t DebugLogger::getLogSize(LogType type) {
+    String fullPath = "/logs/" + getFilename(type);
+    
+    if (!LittleFS.exists(fullPath)) {
+        return 0;
+    }
+    
+    File file = LittleFS.open(fullPath, "r");
+    if (!file) {
+        return 0;
+    }
+    
+    uint32_t size = file.size();
+    file.close();
+    return size;
+}
+
+// DebugLogger.cpp - ИСПРАВЛЕННАЯ функция
+void DebugLogger::rotateLogIfNeeded(LogType type) {
+    String filename = getFilename(type);
+    String fullPath = "/logs/" + filename;
+    
+    if (!LittleFS.exists(fullPath)) {
+        return;
+    }
+    
+    File file = LittleFS.open(fullPath, "r");
+    if (!file) {
+        return;
+    }
+    
+    uint32_t currentSize = file.size();
+    file.close();
+    
+    if (currentSize > maxLogSize) {
+        DEBUG_LOG("🔄 Ротация лога: " + filename + " (" + String(currentSize) + " байт)");
+        
+        // Более простая и надежная реализация
+        String currentContent = getLog(type, 100); // Берем последние 100 строк
+        
+        // Перезаписываем файл
+        File newFile = LittleFS.open(fullPath, "w");
+        if (newFile) {
+            newFile.print(currentContent);
+            newFile.close();
+            DEBUG_LOG("✅ Лог усечен: " + String(currentContent.length()) + " байт сохранено");
+        } else {
+            DEBUG_LOG("❌ Ошибка ротации лога");
+        }
+    }
+}
+
+
+

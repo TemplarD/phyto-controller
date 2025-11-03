@@ -3,7 +3,8 @@
 #include "DebugLogger.h"
 #include "LightSensor.h"
 #include "RelayController.h"
-#include "RGBLed.h"  // Добавляем новый модуль
+#include "RGBLed.h"  
+#include "WebAPI.h"  
 
 // Глобальные объекты
 LightSensor lightSensor;
@@ -58,8 +59,13 @@ void setup() {
     Serial.println("🚀 Все системы инициализированы!");
     Serial.println("💡 Статусный LED на пине: " + String(STATUS_LED));
     Serial.println("🌈 RGB LED на пине: " + String(RGB_LED_PIN));
-    Serial.println("📡 Готов к работе...");
-    Serial.println("=================================");
+    Serial.println("📡 Готов к работе...");	
+    Serial.println("🌐 Инициализация Web API...");
+    Serial.println("=================================");	
+    webAPI.begin();
+    
+    // Настраиваем размер логов
+    DebugLogger::setMaxLogSize(config.maxLogSize);
 }
 
 void loop() {
@@ -91,6 +97,9 @@ void loop() {
         lastSensorLog = currentMillis;
         logSensorData();
     }
+    
+    // Обрабатываем веб-запросы
+    webAPI.handleClient();
     
     delay(100);
 }
@@ -135,7 +144,7 @@ void testSensorConnection() {
     Serial.println("============================");
     
     if (lightSensor.isAvailable()) {
-        Serial.println("✅ Реальный датчик GY-30 (GY-30) подключен");
+        Serial.println("✅ Реальный датчик GY-30 (BH1750) подключен");
         float lux = lightSensor.getLux();
         Serial.println("📊 Текущая освещенность: " + String(lux, 2) + " lux");
     } else {
