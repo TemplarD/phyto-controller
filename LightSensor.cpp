@@ -3,7 +3,7 @@
 #include "DebugLogger.h"
 
 bool LightSensor::begin() {
-    Serial.println("🔧 Инициализация BH1750...");
+    Serial.println("🔧 Инициализация GY-30...");
     
     // Жесткий рестарт I2C
     Wire.end();
@@ -14,16 +14,16 @@ bool LightSensor::begin() {
     
     // Пробуем 3 раза
     for(int i = 0; i < 3; i++) {
-        if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
+        if (lightMeter.begin(GY-30::CONTINUOUS_HIGH_RES_MODE)) {
             sensorFound = true;
             simulationMode = false;
-            DEBUG_LOG("✅ BH1750 подключен");
+            DEBUG_LOG("✅ GY-30 подключен");
             return true;
         }
         delay(500);
     }
     
-    DEBUG_LOG("❌ BH1750 не найден, симуляция");
+    DEBUG_LOG("❌ GY-30 не найден, симуляция");
     sensorFound = false;
     simulationMode = true;
     return false;
@@ -46,12 +46,12 @@ float LightSensor::getLux() {
         static unsigned long lastRetry = 0;
         if (millis() - lastRetry > 10000) { // Каждые 10 секунд
             lastRetry = millis();
-            DEBUG_LOG("🔄 Попытка переподключения BH1750...");
+            DEBUG_LOG("🔄 Попытка переподключения GY-30...");
             Wire.begin(I2C_SDA, I2C_SCL);
             delay(100);
-            if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
+            if (lightMeter.begin(GY-30::CONTINUOUS_HIGH_RES_MODE)) {
                 sensorFound = true;
-                DEBUG_LOG("✅ BH1750 переподключен");
+                DEBUG_LOG("✅ GY-30 переподключен");
             }
         }
         return -1.0;
@@ -59,10 +59,10 @@ float LightSensor::getLux() {
     
     float lux = lightMeter.readLightLevel();
     if (lux >= 0) {
-        DEBUG_LOG("🔆 BH1750: " + String(lux, 2) + " lux");
+        DEBUG_LOG("🔆 GY-30: " + String(lux, 2) + " lux");
         return lux;
     } else {
-        DEBUG_LOG("❌ Ошибка чтения BH1750");
+        DEBUG_LOG("❌ Ошибка чтения GY-30");
         return -1.0;
     }
 }
@@ -72,9 +72,9 @@ bool LightSensor::isAvailable() {
 }
 
 String LightSensor::getSensorInfo() {
-    if (simulationMode) return "BH1750 (СИМУЛЯЦИЯ)";
+    if (simulationMode) return "GY-30 (СИМУЛЯЦИЯ)";
     if (!sensorFound) return "Датчик недоступен";
-    return "BH1750 (GY-30) - Режим: HIGH_RES";
+    return "GY-30 (GY-30) - Режим: HIGH_RES";
 }
 
 void LightSensor::setSimulationMode(bool simulate) {

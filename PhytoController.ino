@@ -135,16 +135,16 @@ void testSensorConnection() {
     Serial.println("============================");
     
     if (lightSensor.isAvailable()) {
-        Serial.println("✅ Реальный датчик BH1750 (GY-30) подключен");
+        Serial.println("✅ Реальный датчик GY-30 (GY-30) подключен");
         float lux = lightSensor.getLux();
         Serial.println("📊 Текущая освещенность: " + String(lux, 2) + " lux");
     } else {
         Serial.println("⚠️ Реальный датчик не найден, используется симуляция");
         Serial.println("🔌 Проверь подключение:");
-        Serial.println("   VEML7700 3Vo -> ESP32 3.3V");
-        Serial.println("   VEML7700 GND -> ESP32 GND"); 
-        Serial.println("   VEML7700 SDA -> ESP32 GPIO21");
-        Serial.println("   VEML7700 SCL -> ESP32 GPIO22");
+        Serial.println("   GY-30 3Vo -> ESP32 3.3V");
+        Serial.println("   GY-30 GND -> ESP32 GND"); 
+        Serial.println("   GY-30 SDA -> ESP32 GPIO13");
+        Serial.println("   GY-30 SCL -> ESP32 GPIO14");
         Serial.println("🔧 Советы:");
         Serial.println("   - Проверь пайку контактов");
         Serial.println("   - Убедись в правильности подключения");

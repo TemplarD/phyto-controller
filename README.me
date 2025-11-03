@@ -12,7 +12,7 @@ The controller is designed for automatic control of phytoled lights (30-50W) in 
 
 ### Main Components
 - **Controller**: ESP32-WROOM with CP2102
-- **Light Sensor**: BH1750 (GY-30) or VEML7700
+- **Light Sensor**: GY-30 (GY-30) or VEML7700
 - **Load Control**: 12V Relay via TIP122 transistor
 - **Indication**: WS2812B RGB LED
 - **Power**: 5V→12V Step-up converter
@@ -27,7 +27,7 @@ ESP32-WROOM (CP2102)
 │   TIP122 Emitter → GND
 │   1N4001 Diode parallel to relay coil
 
-├── 📊 BH1750 SENSOR (GY-30)
+├── 📊 GY-30 SENSOR (GY-30)
 │   GPIO13 → SDA
 │   GPIO14 → SCL  
 │   3.3V → VCC
@@ -52,7 +52,7 @@ ESP32-WROOM (CP2102)
 
 **DebugLogger.h/DebugLogger.cpp** - Logging and debugging system
 
-**LightSensor.h/LightSensor.cpp** - BH1750 light sensor operation
+**LightSensor.h/LightSensor.cpp** - GY-30 light sensor operation
 
 **RelayController.h/RelayController.cpp** - Relay and load control
 
@@ -60,7 +60,7 @@ ESP32-WROOM (CP2102)
 
 ## 🔧 Installation and Setup
 
-1. Install libraries: BH1750, FastLED
+1. Install libraries: GY-30, FastLED
 2. Connect components according to the scheme
 3. Upload code to ESP32
 4. Open Serial Monitor (115200 baud)
@@ -70,7 +70,7 @@ ESP32-WROOM (CP2102)
 - Automatic phytolight control based on light intensity threshold
 - RGB system status indication
 - Data and event logging
-- Support for BH1750 and VEML7700 sensors
+- Support for GY-30 and VEML7700 sensors
 - ESD and overload protection
 
 _________________________________________________________________
@@ -89,7 +89,7 @@ _________________________________________________________________
 
 ### Основные компоненты
 - **Контроллер**: ESP32-WROOM с CP2102
-- **Датчик освещенности**: BH1750 (GY-30) или VEML7700
+- **Датчик освещенности**: GY-30 (GY-30) или VEML7700
 - **Управление нагрузкой**: Реле 12V через транзистор TIP122
 - **Индикация**: RGB светодиод WS2812B
 - **Питание**: Повышающий преобразователь 5V→12V
@@ -104,7 +104,7 @@ ESP32-WROOM (CP2102)
 │   Эмиттер TIP122 → GND
 │   Диод 1N4001 параллельно катушке реле
 
-├── 📊 ДАТЧИК BH1750 (GY-30)
+├── 📊 ДАТЧИК GY-30 (GY-30)
 │   GPIO13 → SDA
 │   GPIO14 → SCL  
 │   3.3V → VCC
@@ -129,7 +129,7 @@ ESP32-WROOM (CP2102)
 
 **DebugLogger.h/DebugLogger.cpp** - Система логирования и отладки
 
-**LightSensor.h/LightSensor.cpp** - Работа с датчиком освещенности BH1750
+**LightSensor.h/LightSensor.cpp** - Работа с датчиком освещенности GY-30
 
 **RelayController.h/RelayController.cpp** - Управление реле и нагрузкой
 
@@ -137,7 +137,7 @@ ESP32-WROOM (CP2102)
 
 ## 🔧 Установка и запуск
 
-1. Установи библиотеки: BH1750, FastLED
+1. Установи библиотеки: GY-30, FastLED
 2. Подключи компоненты по схеме
 3. Прошей код на ESP32
 4. Открой Serial Monitor (115200 бод)
@@ -147,5 +147,5 @@ ESP32-WROOM (CP2102)
 - Автоматическое управление фитолампой по порогу освещенности
 - RGB индикация состояния системы
 - Логирование данных и событий
-- Поддержка датчиков BH1750 и VEML7700
+- Поддержка датчиков GY-30 и VEML7700
 - Защита от ESD и перегрузок
