@@ -5,24 +5,11 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
-#include <ArduinoJson.h>
 
 class WebAPI {
 public:
     void begin();
     void handleClient();
-    
-    // Статус системы
-    String getSystemStatusJSON();
-    
-    // Управление
-    void setManualMode(bool manualOn);
-    void setAutoMode(bool autoMode);
-    void setLightThreshold(float threshold);
-    void toggleRelay();
-    
-    // Логи
-    String getLogsJSON();
     
 private:
     WebServer server;
@@ -35,8 +22,7 @@ private:
     void handleLogs();
     void handleNotFound();
     
-    String getContentType(String filename);
-    bool handleFileRead(String path);
+    String escapeJSONString(const String& input);
 };
 
 extern WebAPI webAPI;

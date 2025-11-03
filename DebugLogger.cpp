@@ -49,8 +49,14 @@ void DebugLogger::logSensor(float lux, bool relayState) {
 }
 
 void DebugLogger::writeToFile(const String& message, const String& filename) {
+    // Определяем тип лога по имени файла
+    LogType type = DEBUG_LOG;
+    if (filename == "sensor.log") type = SENSOR_LOG;
+    else if (filename == "events.log") type = EVENT_LOG;
+    else if (filename == "system.log") type = SYSTEM_LOG;
+    
     // Проверяем и ротируем если нужно
-    rotateLogIfNeeded(filename);
+    rotateLogIfNeeded(type);
     
     String fullPath = "/logs/" + filename;
     
@@ -64,7 +70,7 @@ void DebugLogger::writeToFile(const String& message, const String& filename) {
     file.close();
     
     // Выводим в Serial для отладки
-    Serial.print("📝 LOG: " + filename + " - " + message);
+    Serial.print("LOG: " + filename + " - " + message);
 }
 
 String DebugLogger::getFilename(LogType type) {
@@ -131,7 +137,6 @@ uint32_t DebugLogger::getLogSize(LogType type) {
     return size;
 }
 
-// DebugLogger.cpp - ИСПРАВЛЕННАЯ функция
 void DebugLogger::rotateLogIfNeeded(LogType type) {
     String filename = getFilename(type);
     String fullPath = "/logs/" + filename;
@@ -148,23 +153,68 @@ void DebugLogger::rotateLogIfNeeded(LogType type) {
     uint32_t currentSize = file.size();
     file.close();
     
-    if (currentSize > maxLogSize) {
-        DEBUG_LOG("🔄 Ротация лога: " + filename + " (" + String(currentSize) + " байт)");
-        
-        // Более простая и надежная реализация
-        String currentContent = getLog(type, 100); // Берем последние 100 строк
-        
-        // Перезаписываем файл
-        File newFile = LittleFS.open(fullPath, "w");
-        if (newFile) {
-            newFile.print(currentContent);
-            newFile.close();
-            DEBUG_LOG("✅ Лог усечен: " + String(currentContent.length()) + " байт сохранено");
-        } else {
-            DEBUG_LOG("❌ Ошибка ротации лога");
+    // Если файл меньше максимального размера - ничего не делаем
+    if (currentSize <= maxLogSize) {
+        return;
+    }
+    
+    // Логируем в Serial (не в файл, чтобы избежать рекурсии)
+    Serial.println("🔄 Ротация лога: " + filename + " (" + String(currentSize) + " байт)");
+    
+    // Читаем весь файл
+    String allContent = "";
+    File sourceFile = LittleFS.open(fullPath, "r");
+    if (!sourceFile) {
+        Serial.println("❌ Ошибка чтения файла для ротации");
+        return;
+    }
+    
+    allContent = sourceFile.readString();
+    sourceFile.close();
+    
+    // Считаем общее количество строк
+    int totalLines = 0;
+    for (size_t i = 0; i < allContent.length(); i++) {
+        if (allContent[i] == '\n') {
+            totalLines++;
         }
     }
+    
+    // Если строк меньше 100, ничего не делаем
+    if (totalLines <= 100) {
+        Serial.println("📊 Строк меньше 100, ротация не нужна");
+        return;
+    }
+    
+    // Берем последние 80 строк (оставляем запас)
+    int linesToKeep = 80;
+    int linesFound = 0;
+    String keptContent = "";
+    
+    // Идем с конца файла
+    for (int i = allContent.length() - 1; i >= 0; i--) {
+        if (allContent[i] == '\n') {
+            linesFound++;
+            if (linesFound > linesToKeep) {
+                // Нашли достаточно строк, останавливаемся
+                keptContent = allContent.substring(i + 1);
+                break;
+            }
+        }
+        
+        // Если дошли до начала файла
+        if (i == 0) {
+            keptContent = allContent;
+        }
+    }
+    
+    // Перезаписываем файл
+    File newFile = LittleFS.open(fullPath, "w");
+    if (newFile) {
+        newFile.print(keptContent);
+        newFile.close();
+        Serial.println("✅ Лог усечен: " + String(keptContent.length()) + " байт, " + String(linesToKeep) + " строк сохранено");
+    } else {
+        Serial.println("❌ Ошибка записи при ротации");
+    }
 }
-
-
-
