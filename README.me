@@ -1,0 +1,151 @@
+# 🌱 PhytoController - Smart Phytolighting Controller
+
+Automatic control system for powerful phytolights based on real-time light intensity monitoring.
+
+## 🎯 System Purpose
+
+The controller is designed for automatic control of phytoled lights (30-50W) in mixed lighting conditions:
+- **Sunlight** - primary source  
+- **Phytolights** - supplemental lighting when natural light is insufficient
+
+## 🔌 Hardware Components
+
+### Main Components
+- **Controller**: ESP32-WROOM with CP2102
+- **Light Sensor**: BH1750 (GY-30) or VEML7700
+- **Load Control**: 12V Relay via TIP122 transistor
+- **Indication**: WS2812B RGB LED
+- **Power**: 5V→12V Step-up converter
+
+### Connection Scheme
+
+ESP32-WROOM (CP2102)
+
+├── 🔌 RELAY CIRCUIT
+│   GPIO4 → 680Ω Resistor → TIP122 Base
+│   TIP122 Collector → Relay Coil
+│   TIP122 Emitter → GND
+│   1N4001 Diode parallel to relay coil
+
+├── 📊 BH1750 SENSOR (GY-30)
+│   GPIO13 → SDA
+│   GPIO14 → SCL  
+│   3.3V → VCC
+│   GND → GND
+
+├── 🌈 RGB INDICATOR (WS2812B)
+│   GPIO5 → DIN
+│   5V → VCC
+│   GND → GND
+
+└── 💡 STATUS LED
+    GPIO2 → LED Anode (via 220Ω)
+    GND → LED Cathode
+
+## 💾 Software Architecture
+
+### Project Files
+
+**PhytoController.ino** - Main file, initialization and main loop
+
+**Config.h/Config.cpp** - System settings and pin configuration
+
+**DebugLogger.h/DebugLogger.cpp** - Logging and debugging system
+
+**LightSensor.h/LightSensor.cpp** - BH1750 light sensor operation
+
+**RelayController.h/RelayController.cpp** - Relay and load control
+
+**RGBLed.h/RGBLed.cpp** - RGB indication control
+
+## 🔧 Installation and Setup
+
+1. Install libraries: BH1750, FastLED
+2. Connect components according to the scheme
+3. Upload code to ESP32
+4. Open Serial Monitor (115200 baud)
+
+## 🚀 Features
+
+- Automatic phytolight control based on light intensity threshold
+- RGB system status indication
+- Data and event logging
+- Support for BH1750 and VEML7700 sensors
+- ESD and overload protection
+
+_________________________________________________________________
+
+# 🌱 PhytoController - Умный контроллер фитоосвещения
+
+Автоматическая система управления мощными фитолампами на основе реальной освещенности.
+
+## 🎯 Назначение системы
+
+Контроллер предназначен для автоматического управления фитосветодиодами (30-50Вт) в условиях комбинированного освещения:
+- **Солнечный свет** - основной источник  
+- **Фитолампы** - дополнительная досветка при недостатке естественного света
+
+## 🔌 Аппаратная часть
+
+### Основные компоненты
+- **Контроллер**: ESP32-WROOM с CP2102
+- **Датчик освещенности**: BH1750 (GY-30) или VEML7700
+- **Управление нагрузкой**: Реле 12V через транзистор TIP122
+- **Индикация**: RGB светодиод WS2812B
+- **Питание**: Повышающий преобразователь 5V→12V
+
+### Схема подключения
+
+ESP32-WROOM (CP2102)
+
+├── 🔌 СХЕМА РЕЛЕ
+│   GPIO4 → Резистор 680Ω → База TIP122
+│   Коллектор TIP122 → Катушка реле
+│   Эмиттер TIP122 → GND
+│   Диод 1N4001 параллельно катушке реле
+
+├── 📊 ДАТЧИК BH1750 (GY-30)
+│   GPIO13 → SDA
+│   GPIO14 → SCL  
+│   3.3V → VCC
+│   GND → GND
+
+├── 🌈 RGB ИНДИКАТОР (WS2812B)
+│   GPIO5 → DIN
+│   5V → VCC
+│   GND → GND
+
+└── 💡 СТАТУСНЫЙ LED
+    GPIO2 → Анод светодиода (через 220Ω)
+    GND → Катод светодиода
+
+## 💾 Программная архитектура
+
+### Файлы проекта
+
+**PhytoController.ino** - Главный файл, инициализация и основной цикл
+
+**Config.h/Config.cpp** - Настройки системы и конфигурация пинов
+
+**DebugLogger.h/DebugLogger.cpp** - Система логирования и отладки
+
+**LightSensor.h/LightSensor.cpp** - Работа с датчиком освещенности BH1750
+
+**RelayController.h/RelayController.cpp** - Управление реле и нагрузкой
+
+**RGBLed.h/RGBLed.cpp** - Управление RGB индикацией
+
+## 🔧 Установка и запуск
+
+1. Установи библиотеки: BH1750, FastLED
+2. Подключи компоненты по схеме
+3. Прошей код на ESP32
+4. Открой Serial Monitor (115200 бод)
+
+## 🚀 Возможности
+
+- Автоматическое управление фитолампой по порогу освещенности
+- RGB индикация состояния системы
+- Логирование данных и событий
+- Поддержка датчиков BH1750 и VEML7700
+- Защита от ESD и перегрузок
